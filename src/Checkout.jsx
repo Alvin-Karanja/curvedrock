@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { saveShippingAddress } from "./services/shippingService";
 
-
 const STATUS = {
   IDLE: "IDLE",
   SUBMITTED: "SUBMITTED",
@@ -20,14 +19,18 @@ export default function Checkout({ cart, emptyCart }) {
   const [status, setStatus] = useState(STATUS.IDLE);
   const [saveError, setSaveError] = useState(null);
 
+  // Derived State
+  const errors = getErrors(address);
+  const isValid = Object.keys(errors).length === 0;
+
   function handleChange(e) {
-    e.persist(); // persist the event
+    e.persist(); // persist the event for React 16 and Below
     setAddress((curAddress) => {
       return {
         ...curAddress,
         [e.target.id]: e.target.value,
-      }
-    })
+      };
+    });
   }
 
   function handleBlur(event) {
@@ -37,13 +40,24 @@ export default function Checkout({ cart, emptyCart }) {
   async function handleSubmit(event) {
     event.preventDefault();
     setStatus(STATUS.SUBMITTING);
-    try {
-      await saveShippingAddress(address)
-      emptyCart();
-      setStatus(STATUS.COMPLETED);
-    } catch (e) {
-      setSaveError(e);
+    if (isValid) {
+      try {
+        await saveShippingAddress(address);
+        emptyCart();
+        setStatus(STATUS.COMPLETED);
+      } catch (e) {
+        setSaveError(e);
+      }
+    } else {
+      setStatus(STATUS.SUBMITTED);
     }
+  }
+
+  function getErrors(address) {
+    const result = {};
+    if (!address.city) result.city = "City is required";
+    if (!address.country) result.country = "Country is required";
+    return result;
   }
 
   if (saveError) throw saveError;
@@ -54,6 +68,16 @@ export default function Checkout({ cart, emptyCart }) {
   return (
     <>
       <h1>Shipping Info</h1>
+      {!isValid && status === STATUS.SUBMITTED && (
+        <div role="alert">
+          <p>Please fix the following errors:</p>
+          <ul>
+            {Object.keys(errors).map((key) => {
+              return <li key={key}>{errors[key]}</li>;
+            })}
+          </ul>
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="city">City</label>
