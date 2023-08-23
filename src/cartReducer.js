@@ -5,8 +5,8 @@ export default function cartReducer(cart, action) {
     case "updateQuantity": {
       const { quantity, sku } = action;
       return quantity === 0
-        ? cart.filter((i) => i.sku !== sku)
-        : cart.map((i) => (i.sku === sku ? { ...i, quantity } : i));
+          ? cart.filter((i) => i.sku !== sku)
+          : cart.map((i) => (i.sku === sku ? { ...i, quantity } : i));
     }
     case "add":
       const { id, sku } = action;
@@ -14,7 +14,7 @@ export default function cartReducer(cart, action) {
       if (itemInCart) {
         // Return new array with the matching item replaced
         return cart.map((i) =>
-          i.sku === sku ? { ...i, quantity: i.quantity + 1 } : i
+            i.sku === sku ? { ...i, quantity: i.quantity + 1 } : i
         );
       } else {
         // Return new array with the new item appended
