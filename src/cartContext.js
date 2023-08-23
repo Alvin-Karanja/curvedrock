@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer } from "react";
+import React, { useReducer, useEffect, useContext } from "react";
 import cartReducer from "./cartReducer";
 
 const CartContext = React.createContext(null);
@@ -19,13 +19,18 @@ export function CartProvider(props) {
     dispatch,
   };
   return (
-    <CartContext.Provider value={contextValue}>
-      {props.children}
-    </CartContext.Provider>
+      <CartContext.Provider value={contextValue}>
+        {props.children}
+      </CartContext.Provider>
   );
 }
 
 export function useCart() {
   const context = useContext(CartContext);
+  if (!context) {
+    throw new Error(
+        "useCart must be used within a CartProvider. Wrap a parent component in <CartProvider> to fix this error."
+    );
+  }
   return context;
 }
