@@ -7,6 +7,8 @@ import { Routes, Route } from "react-router-dom";
 import Detail from "./Detail";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
+import { CartContext } from "./cartContext";
+import {dispatch} from "jest-circus/build/state";
 
 export default function App() {
   const [cart, setCart] = useState(() => {
@@ -48,7 +50,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <CartContext.Provider value={{ cart, dispatch }}>
       <div className="content">
         <Header />
         <main>
@@ -68,6 +70,6 @@ export default function App() {
         </main>
       </div>
       <Footer />
-    </>
+    </CartContext.Provider>
   );
 }
