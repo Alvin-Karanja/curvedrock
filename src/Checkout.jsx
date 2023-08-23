@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { saveShippingAddress } from "./services/shippingService";
+import { useCart } from "./cartContext";
 
 const STATUS = {
   IDLE: "IDLE",
@@ -14,18 +15,20 @@ const emptyAddress = {
   country: "",
 };
 
-export default function Checkout({ cart, dispatch }) {
+
+export default function Checkout() {
+  const { dispatch } = useCart();
   const [address, setAddress] = useState(emptyAddress);
   const [status, setStatus] = useState(STATUS.IDLE);
   const [saveError, setSaveError] = useState(null);
   const [touched, setTouched] = useState({});
 
-  // Derived State
+  // Derived state
   const errors = getErrors(address);
   const isValid = Object.keys(errors).length === 0;
 
   function handleChange(e) {
-    e.persist(); // persist the event for React 16 and Below
+    e.persist(); // persist the event
     setAddress((curAddress) => {
       return {
         ...curAddress,
@@ -35,6 +38,7 @@ export default function Checkout({ cart, dispatch }) {
   }
 
   function handleBlur(event) {
+    event.persist();
     setTouched((cur) => {
       return { ...cur, [event.target.id]: true };
     });
@@ -69,63 +73,64 @@ export default function Checkout({ cart, dispatch }) {
   }
 
   return (
-    <>
-      <h1>Shipping Info</h1>
-      {!isValid && status === STATUS.SUBMITTED && (
-        <div role="alert">
-          <p>Please fix the following errors:</p>
-          <ul>
-            {Object.keys(errors).map((key) => {
-              return <li key={key}>{errors[key]}</li>;
-            })}
-          </ul>
-        </div>
-      )}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="city">City</label>
-          <br />
-          <input
-            id="city"
-            type="text"
-            value={address.city}
-            onBlur={handleBlur}
-            onChange={handleChange}
-          />
-          <p role="alert">
-            {(touched.city || status === STATUS.SUBMITTED) && errors.city}
-          </p>
-        </div>
+      <>
+        <h1>Shipping Info</h1>
+        {!isValid && status === STATUS.SUBMITTED && (
+            <div role="alert">
+              <p>Please fix the following errors:</p>
+              <ul>
+                {Object.keys(errors).map((key) => {
+                  return <li key={key}>{errors[key]}</li>;
+                })}
+              </ul>
+            </div>
+        )}
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="city">City</label>
+            <br />
+            <input
+                id="city"
+                type="text"
+                value={address.city}
+                onBlur={handleBlur}
+                onChange={handleChange}
+            />
+            <p role="alert">
+              {(touched.city || status === STATUS.SUBMITTED) && errors.city}
+            </p>
+          </div>
 
-        <div>
-          <label htmlFor="country">Country</label>
-          <br />
-          <select
-            id="country"
-            value={address.country}
-            onBlur={handleBlur}
-            onChange={handleChange}
-          >
-            <option value="">Select Country</option>
-            <option value="China">China</option>
-            <option value="India">India</option>
-            <option value="United Kingdom">United Kingdom</option>
-            <option value="USA">USA</option>
-          </select>
-          <p role="alert">
-            {(touched.country || status === STATUS.SUBMITTED) && errors.country}
-          </p>
-        </div>
+          <div>
+            <label htmlFor="country">Country</label>
+            <br />
+            <select
+                id="country"
+                value={address.country}
+                onBlur={handleBlur}
+                onChange={handleChange}
+            >
+              <option value="">Select Country</option>
+              <option value="China">China</option>
+              <option value="India">India</option>
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="USA">USA</option>
+            </select>
 
-        <div>
-          <input
-            type="submit"
-            className="btn btn-primary"
-            value="Save Shipping Info"
-            disabled={status === STATUS.SUBMITTING}
-          />
-        </div>
-      </form>
-    </>
+            <p role="alert">
+              {(touched.country || status === STATUS.SUBMITTED) && errors.country}
+            </p>
+          </div>
+
+          <div>
+            <input
+                type="submit"
+                className="btn btn-primary"
+                value="Save Shipping Info"
+                disabled={status === STATUS.SUBMITTING}
+            />
+          </div>
+        </form>
+      </>
   );
 }
