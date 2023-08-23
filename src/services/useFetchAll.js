@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import * as url from "url";
+import { useState, useRef, useEffect } from "react";
 
 export default function useFetchAll(urls) {
   const prevUrls = useRef([]);
@@ -8,7 +7,7 @@ export default function useFetchAll(urls) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    //only run if the arrays of URLs passed in changes
+    // Only run if the array of URLs passed in changes
     if (areEqual(prevUrls.current, urls)) {
       setLoading(false);
       return;
@@ -16,19 +15,19 @@ export default function useFetchAll(urls) {
     prevUrls.current = urls;
 
     const promises = urls.map((url) =>
-      fetch(process.env.REACT_APP_API_BASE_URL + url).then((response) => {
-        if (response.ok) return response.json();
-        throw response;
-      })
+        fetch(process.env.REACT_APP_API_BASE_URL + url).then((response) => {
+          if (response.ok) return response.json();
+          throw response;
+        })
     );
 
     Promise.all(promises)
-      .then((json) => setData(json))
-      .catch((e) => {
-        console.error(e);
-        setError(e);
-      })
-      .finally(() => setLoading(false));
+        .then((json) => setData(json))
+        .catch((e) => {
+          console.error(e);
+          setError(e);
+        })
+        .finally(() => setLoading(false));
   }, [urls]);
 
   return { data, loading, error };
@@ -36,7 +35,7 @@ export default function useFetchAll(urls) {
 
 function areEqual(array1, array2) {
   return (
-    array1.length === array2.length &&
-    array1.every((value, index) => value === array2[index])
+      array1.length === array2.length &&
+      array1.every((value, index) => value === array2[index])
   );
 }
