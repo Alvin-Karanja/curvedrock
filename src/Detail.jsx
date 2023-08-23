@@ -20,27 +20,23 @@ export default function Detail(props) {
       <p>{product.description}</p>
       <p id="price">${product.price}</p>
 
-        <select
-            id="size"
-            value={sku}
-            onChange={(e) => setSku(e.target.value)}
-        >
-            <option value="">What size?</option>
-            {product.skus.map((s) => (
-                <option key={s.sku} value={s.sku}>
-                    {s.size}
-                </option>
-            ))}
-        </select>
+      <select id="size" value={sku} onChange={(e) => setSku(e.target.value)}>
+        <option value="">What size?</option>
+        {product.skus.map((s) => (
+          <option key={s.sku} value={s.sku}>
+            {s.size}
+          </option>
+        ))}
+      </select>
 
       <p>
         <button
-            disabled={!sku}
-            className="btn btn-primary"
-            onClick={() => {
-                props.addToCart(id, sku);
-                navigate("/cart");
-            }}
+          disabled={!sku}
+          className="btn btn-primary"
+          onClick={() => {
+            props.dispatch({ type: "add", id, sku });
+            navigate("/cart");
+          }}
         >
           Add to cart
         </button>
