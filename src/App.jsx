@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import "./App.css";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -7,12 +7,10 @@ import { Routes, Route } from "react-router-dom";
 import Detail from "./Detail";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
-import { CartContext } from "./cartContext";
-
 
 export default function App() {
   return (
-    <CartContext.Provider value={{ cart, dispatch }}>
+    <>
       <div className="content">
         <Header />
         <main>
@@ -21,17 +19,17 @@ export default function App() {
             <Route path="/:category" element={<Products />} />
             <Route
               path="/:category/:id"
-              element={<Detail addToCart={addToCart} />}
+              element={<Detail dispatch={dispatch} />}
             />
+            <Route path="/cart" element={<Cart />} />
             <Route
-              path="/cart"
-              element={<Cart />}
+              path="/checkout"
+              element={<Checkout cart={cart} dispatch={dispatch} />}
             />
-            <Route path="/checkout" element={<Checkout cart={cart} emptyCart={emptyCart} />} />
           </Routes>
         </main>
       </div>
       <Footer />
-    </CartContext.Provider>
+    </>
   );
 }
