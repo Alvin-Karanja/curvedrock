@@ -15,6 +15,7 @@ const emptyAddress = {
   country: "",
 };
 
+
 export default function Checkout() {
   const { dispatch } = useCart();
   const [address, setAddress] = useState(emptyAddress);
