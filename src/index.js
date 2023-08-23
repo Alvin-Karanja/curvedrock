@@ -6,14 +6,13 @@ import ErrorBoundary from "./ErrorBoundary";
 import { BrowserRouter } from "react-router-dom";
 import { CartProvider } from "./cartContext";
 
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <ErrorBoundary>
     <React.StrictMode>
       <BrowserRouter>
         <CartProvider>
-            <App />
+          <App />
         </CartProvider>
       </BrowserRouter>
     </React.StrictMode>
