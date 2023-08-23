@@ -20,32 +20,6 @@ export default function App() {
 
   useEffect(() => localStorage.setItem("cart", JSON.stringify(cart)), [cart]);
 
-  function addToCart(id, sku) {
-    setCart((items) => {
-      const itemInCart = items.find((i) => i.sku === sku);
-      if (itemInCart) {
-        // return new array with the matching item replaced
-        return items.map((i) =>
-          i.sku === sku ? { ...i, quantity: i.quantity + 1 } : i
-        );
-      } else {
-        // return new array with the new item appended
-        return [...items, { id, sku, quantity: 1 }];
-      }
-    });
-  }
-
-  function updateQuantity(sku, quantity) {
-    setCart((items) => {
-      return quantity === 0
-        ? items.filter((i) => i.sku !== sku)
-        : items.map((i) => (i.sku === sku ? { ...i, quantity } : i));
-    });
-  }
-
-  function emptyCart() {
-    setCart([]);
-  }
 
   return (
     <>
